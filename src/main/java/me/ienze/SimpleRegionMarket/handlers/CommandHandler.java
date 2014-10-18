@@ -12,6 +12,7 @@ import me.ienze.SimpleRegionMarket.signs.TemplateMain;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -359,17 +360,29 @@ public class CommandHandler implements CommandExecutor {
                         String[] lines = new String[]{
                             "What do you want to see? ",
                             "  /srm statistics global/userBuy/userSell <player>"
-                        };
+                        };                
 
                         LangHandler.Out(sender, ChatColor.GREEN, lines);
-                    } else {
+                    } else if(!args[1].equalsIgnoreCase("global") && isConsole && args.length != 3){
+                        String[] lines = new String[]{
+                            "What do you want to see? ",
+                            "  /srm statistics global/userBuy/userSell <player>"
+                        };                
 
-                        String aboutPlayer = player.getName();
+                        LangHandler.Out(sender, ChatColor.GREEN, lines);    
+                    } else {
+                        
+                        String aboutPlayer = null;
+                        String aboutPlayer_Name = null;
 
                         if (isConsole || SimpleRegionMarket.permManager.hadAdminPermissions(player)) {
-                            if (args.length > 3) {
-                                aboutPlayer = args[2];
+                            if (args.length == 3) {
+                                aboutPlayer = Bukkit.getOfflinePlayer(args[2]).getUniqueId().toString();
+                                aboutPlayer_Name = args[2];
                             }
+                        } else {
+                            aboutPlayer = player.getUniqueId().toString();
+                            aboutPlayer_Name = player.getName();                          
                         }
 
                         ArrayList<String> out = new ArrayList<String>();
@@ -393,14 +406,14 @@ public class CommandHandler implements CommandExecutor {
                         } else if (statisticsType.equalsIgnoreCase("userBuy")) {
 
                             //user buy transactions
-                            out.add(aboutPlayer + "s buy transactions:");
+                            out.add(aboutPlayer_Name + "s buy transactions:");
                             out.add("  All: " + getStatisticsEntry("users." + aboutPlayer + ".buyedtokens.all"));
                             for (final TemplateMain token : TokenManager.tokenList) {
                                 out.add("  " + token.id + ": " + getStatisticsEntry("users." + aboutPlayer + ".buyedtokens." + token.id));
                             }
 
                             //user buy price
-                            out.add(aboutPlayer + "s buy price:");
+                            out.add(aboutPlayer_Name + "s buy price:");
                             out.add("  All: " + getStatisticsEntry("users." + aboutPlayer + ".payedprice.all"));
                             for (final TemplateMain token : TokenManager.tokenList) {
                                 out.add("  " + token.id + ": " + getStatisticsEntry("users." + aboutPlayer + ".payedprice." + token.id));
@@ -409,14 +422,14 @@ public class CommandHandler implements CommandExecutor {
                         } else if (statisticsType.equalsIgnoreCase("userSell")) {
 
                             //user sell transactions
-                            out.add(aboutPlayer + "s sell transactions:");
+                            out.add(aboutPlayer_Name + "s sell transactions:");
                             out.add("  All: " + getStatisticsEntry("users." + aboutPlayer + ".selledtokens.all"));
                             for (final TemplateMain token : TokenManager.tokenList) {
                                 out.add("  " + token.id + ": " + getStatisticsEntry("users." + aboutPlayer + ".selledtokens." + token.id));
                             }
 
                             //user sell price
-                            out.add(aboutPlayer + "s sell price:");
+                            out.add(aboutPlayer_Name + "s sell price:");
                             out.add("  All: " + getStatisticsEntry("users." + aboutPlayer + ".earnedprice.all"));
                             for (final TemplateMain token : TokenManager.tokenList) {
                                 out.add("  " + token.id + ": " + getStatisticsEntry("users." + aboutPlayer + ".earnedprice." + token.id));
@@ -477,7 +490,7 @@ public class CommandHandler implements CommandExecutor {
                         for (final String w : t.entries.keySet()) {
                             for (final String r : t.entries.get(w).keySet()) {
                                 if (r.equalsIgnoreCase(args[1])) {
-                                    if (Utils.getEntryBoolean(t, w, r, "taken") == true && Utils.getEntryString(t, w, r, "owner").equals(player.getName())) {
+                                    if (Utils.getEntryBoolean(t, w, r, "taken") == true && Utils.getEntryString(t, w, r, "owner").equals(player.getUniqueId().toString())) {
                                         world = w;
                                         region = r;
                                         break;
@@ -524,7 +537,8 @@ public class CommandHandler implements CommandExecutor {
 
                 if (isConsole || SimpleRegionMarket.permManager.canPlayerCommandAbout(player)) {
 
-                    String aboutPlayer = player.getName();
+                    OfflinePlayer aboutPlayer = player;
+                    String aboutPlayer_Name = player.getName();
                     int page = 1;
 
                     for (String arg : args) {
@@ -536,7 +550,7 @@ public class CommandHandler implements CommandExecutor {
                             } else {
                                 if (isConsole || SimpleRegionMarket.permManager.hadAdminPermissions(player)) {
                                     if (args.length > 3) {
-                                        aboutPlayer = arg;
+                                        aboutPlayer = Bukkit.getOfflinePlayer(arg);
                                     }
                                 }
                             }

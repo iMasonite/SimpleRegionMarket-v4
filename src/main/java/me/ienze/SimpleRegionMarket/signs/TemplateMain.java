@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import me.ienze.SimpleRegionMarket.SimpleRegionMarket;
 import me.ienze.SimpleRegionMarket.TokenManager;
@@ -20,6 +21,7 @@ import me.ienze.SimpleRegionMarket.regions.SimpleRegionData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -156,7 +158,7 @@ public abstract class TemplateMain {
                         if (Utils.getEntry(this, world, region, "owner") == null || Utils.getEntryString(this, world, region, "owner").isEmpty()) {
                             replacementMap.put("player", "No owner");
                         } else {
-                            replacementMap.put("player", Utils.getEntryString(this, world, region, "owner"));
+                            replacementMap.put("player", Utils.getEntryName(this, world, region, "owner"));
                         }
                         replacementMap.put("x", Integer.toString(Math.abs((int) protectedRegion.getMaximumPoint().getX()
                                 - (int) (protectedRegion.getMinimumPoint().getX() - 1))));
@@ -176,7 +178,7 @@ public abstract class TemplateMain {
     public boolean isRegionOwner(Player player, String world, String region) {
         if (Utils.getEntry(this, world, region, "taken") != null && Utils.getEntryBoolean(this, world, region, "taken")
                 && Utils.getEntry(this, world, region, "owner") != null) {
-            if (Utils.getEntryString(this, world, region, "owner").equalsIgnoreCase(player.getName())) {
+            if (Utils.getEntryString(this, world, region, "owner").equalsIgnoreCase(player.getUniqueId().toString())) {
                 return true;
             }
         }
@@ -209,15 +211,12 @@ public abstract class TemplateMain {
     public void otherClicksSign(Player player, String world, String region) {
         if (SimpleRegionMarket.permManager.canPlayerUseSign(player, "sell")) {
             if (SimpleRegionMarket.econManager.isEconomy()) {
-                String account = Utils.getEntryString(this, world, region, "account");
-                if (account.isEmpty()) {
-                    account = null;
-                }
+                OfflinePlayer account = Bukkit.getOfflinePlayer(UUID.fromString(Utils.getEntryString(this, world, region, "account")));
                 final double price = Utils.getEntryDouble(this, world, region, "price");
-                if (SimpleRegionMarket.econManager.moneyTransaction(player.getName(), account, price)) {
+                if (SimpleRegionMarket.econManager.moneyTransaction(player, account, price)) {
                     takeRegion(player, world, region);
-                    SimpleRegionMarket.statisticManager.onSignClick(this.id, world, account, player.getName());
-                    SimpleRegionMarket.statisticManager.onMoneysUse(this.id, world, price, account, player.getName());
+                    SimpleRegionMarket.statisticManager.onSignClick(this.id, world, account, player);
+                    SimpleRegionMarket.statisticManager.onMoneysUse(this.id, world, price, account, player);
                 }
             } else {
                 takeRegion(player, world, region);
@@ -232,7 +231,7 @@ public abstract class TemplateMain {
             final Player oldOwner = Bukkit.getPlayer(Utils.getEntryString(this, world, region, "owner"));
             final ArrayList<String> list = new ArrayList<String>();
             list.add(region);
-            list.add(newOwner.getName());
+            list.add(newOwner.getUniqueId().toString());
             LangHandler.NormalOut(oldOwner, "PLAYER.REGION.JUST_TAKEN_BY", list);
             untakeRegion(world, region);
         } else {
@@ -253,7 +252,7 @@ public abstract class TemplateMain {
         }
 
         Utils.setEntry(this, world, region, "taken", true);
-        Utils.setEntry(this, world, region, "owner", newOwner.getName());
+        Utils.setEntry(this, world, region, "owner", newOwner.getUniqueId().toString());
         Utils.setEntry(this, world, region, "hidden", true);
 
         final ArrayList<String> list = new ArrayList<String>();
@@ -332,7 +331,7 @@ public abstract class TemplateMain {
                 }
             } else {
                 if (SimpleRegionMarket.configurationHandler.getBoolean("Player_Line_Empty")) {
-                    account = player.getName();
+                    account = player.getUniqueId().toString();
                 } else {
                     account = SimpleRegionMarket.configurationHandler.getString("Default_Economy_Account");
                 }

@@ -246,7 +246,7 @@ public class LimitHandler {
     public int countPlayerWorldRegions(Player player, TemplateMain token, String world) {
         int count = 0;
         if (StatisticsCountMode) {
-            count = SimpleRegionMarket.statisticManager.getEntry(world + ".users." + player.getName() + ".buyedtokens." + token.id);
+            count = SimpleRegionMarket.statisticManager.getEntry(world + ".users." + player.getUniqueId().toString() + ".buyedtokens." + token.id);
         } else {
             if (token.entries.containsKey(world)) {
                 for (final String region : token.entries.get(world).keySet()) {
@@ -288,7 +288,7 @@ public class LimitHandler {
         int count = 0;
         if (StatisticsCountMode) {
             for (World world : Bukkit.getWorlds()) {
-                count += SimpleRegionMarket.statisticManager.getEntry(world.getName() + ".users." + player.getName() + ".buyedtokens." + token.id);
+                count += SimpleRegionMarket.statisticManager.getEntry(world.getName() + ".users." + player.getUniqueId().toString() + ".buyedtokens." + token.id);
             }
         } else {
             for (final String world : token.entries.keySet()) {

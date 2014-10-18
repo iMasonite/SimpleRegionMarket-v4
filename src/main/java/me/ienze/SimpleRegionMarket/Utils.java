@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,6 +17,7 @@ import me.ienze.SimpleRegionMarket.signs.TemplateMain;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -152,6 +154,16 @@ public class Utils {
             entry = entry.toString();
         }
         return (String) entry;
+    }
+    
+    public static String getEntryName(TemplateMain token, String world, String region, String key) {
+        Object entry = Utils.getEntry(token, world, region, key);
+        String name = null;
+        if (entry != null) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(entry.toString()));
+            name = player.getName();
+        }
+        return name;
     }
 
     public static boolean getEntryBoolean(TemplateMain token, String world, String region, String key) {

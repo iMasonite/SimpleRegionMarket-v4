@@ -4,12 +4,14 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import me.ienze.SimpleRegionMarket.SimpleRegionMarket;
 import me.ienze.SimpleRegionMarket.TokenManager;
 import me.ienze.SimpleRegionMarket.Utils;
 import me.ienze.SimpleRegionMarket.handlers.LangHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -33,8 +35,8 @@ public class TemplateBid extends TemplateMain {
 
     @Override
     public void otherClicksSign(Player player, String world, String region) {
-        String pr = playersBid.get(player.getName());
-        if (playersBid.containsKey(player.getName()) && pr != region) {
+        String pr = playersBid.get(player.getUniqueId().toString());
+        if (playersBid.containsKey(player.getUniqueId().toString()) && pr != region) {
             LangHandler.NormalOut(player, "PLAYER.LIMITS.ONLY_ONE_BID", null);
             return;
         } else {
@@ -43,19 +45,19 @@ public class TemplateBid extends TemplateMain {
                     Double priceMax = Utils.getOptionDouble(this, "price.max");
                     if (priceMax == -1 || priceMax > Utils.getEntryInteger(this, world, region, "price")) {
                         if (SimpleRegionMarket.econManager.isEconomy()) {
-                            Double price = Utils.getEntryDouble(this, world, region, "startingprice") + Utils.getEntryDouble(this, world, region, "user." + player.getName());
-                            String account = Utils.getEntryString(this, world, region, "account");
-                            if (SimpleRegionMarket.econManager.econHasEnough(player.getName(), price)) {
-                                if (SimpleRegionMarket.econManager.moneyTransaction(player.getName(), account, price)) {
-                                    Utils.setEntry(this, world, region, "user." + player.getName(), price);
+                            Double price = Utils.getEntryDouble(this, world, region, "startingprice") + Utils.getEntryDouble(this, world, region, "user." + player.getUniqueId().toString());
+                            OfflinePlayer account = Bukkit.getOfflinePlayer(UUID.fromString(Utils.getEntryString(this, world, region, "account")));
+                            if (SimpleRegionMarket.econManager.econHasEnough(player, price)) {
+                                if (SimpleRegionMarket.econManager.moneyTransaction(player, account, price)) {
+                                    Utils.setEntry(this, world, region, "user." + player.getUniqueId().toString(), price);
                                     if (Utils.getEntryDouble(this, world, region, "price") <= price) {
-                                        Utils.setEntry(this, world, region, "owner", player.getName());
+                                        Utils.setEntry(this, world, region, "owner", player.getUniqueId().toString());
                                         Utils.setEntry(this, world, region, "price", price);
                                     }
                                     //save bid region to hashmap
-                                    playersBid.put(player.getName(), region);
+                                    playersBid.put(player.getUniqueId().toString(), region);
 
-                                    SimpleRegionMarket.statisticManager.onMoneysUse(this.id, world, price, account, player.getName());
+                                    SimpleRegionMarket.statisticManager.onMoneysUse(this.id, world, price, account, player);
 
                                     final ArrayList<String> list = new ArrayList<String>();
                                     list.add(String.valueOf(Utils.getEntryDouble(this, world, region, "startingprice")));
@@ -64,10 +66,10 @@ public class TemplateBid extends TemplateMain {
                                 }
                             }
                         } else {
-                            Double price = Utils.getEntryDouble(this, world, region, "startingprice") + Utils.getEntryDouble(this, world, region, "user." + player.getName());
-                            Utils.setEntry(this, world, region, "user." + player.getName(), price);
+                            Double price = Utils.getEntryDouble(this, world, region, "startingprice") + Utils.getEntryDouble(this, world, region, "user." + player.getUniqueId().toString());
+                            Utils.setEntry(this, world, region, "user." + player.getUniqueId().toString(), price);
                             if (Utils.getEntryDouble(this, world, region, "price") < price) {
-                                Utils.setEntry(this, world, region, "owner", player.getName());
+                                Utils.setEntry(this, world, region, "owner", player.getUniqueId().toString());
                                 Utils.setEntry(this, world, region, "price", price);
                             }
                         }
@@ -92,7 +94,7 @@ public class TemplateBid extends TemplateMain {
             if (Utils.getEntry(this, world, region, "owner") == null || Utils.getEntryString(this, world, region, "owner").isEmpty()) {
                 replacementMap.put("player", "No owner");
             } else {
-                replacementMap.put("player", Utils.getEntryString(this, world, region, "owner"));
+                replacementMap.put("player", Utils.getEntryName(this, world, region, "owner"));
             }
             if (Utils.getEntry(this, world, region, "expiredate") != null) {
                 replacementMap.put("timeleft", Utils.getSignTime(Utils.getEntryLong(this, world, region, "expiredate") - System.currentTimeMillis()));
@@ -109,7 +111,7 @@ public class TemplateBid extends TemplateMain {
                     final Player player = Bukkit.getPlayer(Utils.getEntryString(this, world, region, "owner"));
                     if (player != null) {
                         takeRegion(player, world, region);
-                        SimpleRegionMarket.statisticManager.onSignClick(this.id, world, Utils.getEntryString(this, world, region, "account"), player.getName());
+                        SimpleRegionMarket.statisticManager.onSignClick(this.id, world, Bukkit.getOfflinePlayer(UUID.fromString(Utils.getEntryString(this, world, region, "account"))), player);
                     }
 
                     final ArrayList<String> list = new ArrayList<String>();
@@ -195,7 +197,7 @@ public class TemplateBid extends TemplateMain {
                 }
             } else {
                 if (SimpleRegionMarket.configurationHandler.getBoolean("Player_Line_Empty")) {
-                    account = player.getName();
+                    account = player.getUniqueId().toString();
                 } else {
                     account = SimpleRegionMarket.configurationHandler.getString("Default_Economy_Account");
                 }

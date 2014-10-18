@@ -1,11 +1,13 @@
 package me.ienze.SimpleRegionMarket.signs;
 
 import java.util.ArrayList;
+import java.util.UUID;
 import me.ienze.SimpleRegionMarket.SimpleRegionMarket;
 import me.ienze.SimpleRegionMarket.TokenManager;
 import me.ienze.SimpleRegionMarket.Utils;
 import me.ienze.SimpleRegionMarket.handlers.LangHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -22,19 +24,16 @@ public class TemplateHotel extends TemplateLet {
     public void otherClicksSign(Player player, String world, String region) {
         if (SimpleRegionMarket.permManager.canPlayerUseSign(player, "rent")) {
             if (SimpleRegionMarket.econManager.isEconomy()) {
-                String account = Utils.getEntryString(this, world, region, "account");
-                if (account.isEmpty()) {
-                    account = null;
-                }
+                OfflinePlayer account = Bukkit.getOfflinePlayer(UUID.fromString(Utils.getEntryString(this, world, region, "account")));
                 final double price = Utils.getEntryDouble(this, world, region, "price");
-                if (SimpleRegionMarket.econManager.moneyTransaction(player.getName(), account, price)) {
+                if (SimpleRegionMarket.econManager.moneyTransaction(player, account, price)) {
                     takeRegion(player, world, region);
-                    SimpleRegionMarket.statisticManager.onSignClick(this.id, world, account, player.getName());
-                    SimpleRegionMarket.statisticManager.onMoneysUse(this.id, world, price, account, player.getName());
+                    SimpleRegionMarket.statisticManager.onSignClick(this.id, world, account, player);
+                    SimpleRegionMarket.statisticManager.onMoneysUse(this.id, world, price, account, player);
                 }
             } else {
-                String account = Utils.getEntryString(this, world, region, "account");
-                SimpleRegionMarket.statisticManager.onSignClick(this.id, world, account, player.getName());
+                OfflinePlayer account = Bukkit.getOfflinePlayer(UUID.fromString(Utils.getEntryString(this, world, region, "account")));
+                SimpleRegionMarket.statisticManager.onSignClick(this.id, world, account, player);
                 takeRegion(player, world, region);
             }
         }
@@ -54,16 +53,13 @@ public class TemplateHotel extends TemplateLet {
         if (mre.equals("-1") || mre.equals("0") || rentLimit) {
             if (SimpleRegionMarket.configurationHandler.getBoolean("Can_Extend")) {
                 if (SimpleRegionMarket.econManager.isEconomy()) {
-                    String account = Utils.getEntryString(this, world, region, "account");
-                    if (account.isEmpty()) {
-                        account = null;
-                    }
+                    OfflinePlayer account = Bukkit.getOfflinePlayer(UUID.fromString(Utils.getEntryString(this, world, region, "account")));
                     final double price = Utils.getEntryDouble(this, world, region, "price");
-                    if (SimpleRegionMarket.econManager.moneyTransaction(Utils.getEntryString(this, world, region, "owner"), account, price)) {
+                    if (SimpleRegionMarket.econManager.moneyTransaction(Bukkit.getOfflinePlayer(UUID.fromString(Utils.getEntryString(this, world, region, "owner"))), account, price)) {
                         Utils.setEntry(this, world, region, "expiredate", newRentTime);
                         tokenManager.updateSigns(this, world, region);
                         LangHandler.NormalOut(owner, "PLAYER.REGION.ADDED_RENTTIME", null);
-                        SimpleRegionMarket.statisticManager.onMoneysUse(this.id, world, price, account, owner.getName());
+                        SimpleRegionMarket.statisticManager.onMoneysUse(this.id, world, price, account, owner);
                     }
                 } else {
                     Utils.setEntry(this, world, region, "expiredate", newRentTime);

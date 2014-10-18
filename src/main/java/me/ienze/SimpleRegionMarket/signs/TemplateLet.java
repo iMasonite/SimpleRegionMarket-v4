@@ -5,12 +5,14 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import me.ienze.SimpleRegionMarket.SimpleRegionMarket;
 import me.ienze.SimpleRegionMarket.TokenManager;
 import me.ienze.SimpleRegionMarket.Utils;
 import me.ienze.SimpleRegionMarket.handlers.LangHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -32,15 +34,12 @@ public class TemplateLet extends TemplateMain {
     public void otherClicksSign(Player player, String world, String region) {
         if (SimpleRegionMarket.permManager.canPlayerUseSign(player, "let")) {
             if (SimpleRegionMarket.econManager.isEconomy()) {
-                String account = Utils.getEntryString(this, world, region, "account");
-                if (account.isEmpty()) {
-                    account = null;
-                }
+                OfflinePlayer account = Bukkit.getOfflinePlayer(UUID.fromString(Utils.getEntryString(this, world, region, "account")));
                 final double price = Utils.getEntryDouble(this, world, region, "price");
-                if (SimpleRegionMarket.econManager.moneyTransaction(player.getName(), account, price)) {
+                if (SimpleRegionMarket.econManager.moneyTransaction(player, account, price)) {
                     takeRegion(player, world, region);
-                    SimpleRegionMarket.statisticManager.onSignClick(this.id, world, account, player.getName());
-                    SimpleRegionMarket.statisticManager.onMoneysUse(this.id, world, price, account, player.getName());
+                    SimpleRegionMarket.statisticManager.onSignClick(this.id, world, account, player);
+                    SimpleRegionMarket.statisticManager.onMoneysUse(this.id, world, price, account, player);
                 }
             } else {
                 takeRegion(player, world, region);
@@ -56,7 +55,7 @@ public class TemplateLet extends TemplateMain {
             final Player oldOwner = Bukkit.getPlayer(Utils.getEntryString(this, world, region, "owner"));
             final ArrayList<String> list = new ArrayList<String>();
             list.add(region);
-            list.add(newOwner.getName());
+            list.add(newOwner.getUniqueId().toString());
             LangHandler.NormalOut(oldOwner, "PLAYER.REGION.JUST_TAKEN_BY", list);
             untakeRegion(world, region);
         } else {
@@ -69,7 +68,7 @@ public class TemplateLet extends TemplateMain {
         checkTakeActions(protectedRegion, world);
 
         Utils.setEntry(this, world, region, "taken", true);
-        Utils.setEntry(this, world, region, "owner", newOwner.getName());
+        Utils.setEntry(this, world, region, "owner", newOwner.getUniqueId().toString());
         Utils.setEntry(this, world, region, "expiredate", System.currentTimeMillis() + Utils.getEntryLong(this, world, region, "renttime"));
         Utils.setEntry(this, world, region, "hidden", true);
 
@@ -172,7 +171,7 @@ public class TemplateLet extends TemplateMain {
                 }
             } else {
                 if (SimpleRegionMarket.configurationHandler.getBoolean("Player_Line_Empty")) {
-                    account = player.getName();
+                    account = player.getUniqueId().toString();
                 } else {
                     account = SimpleRegionMarket.configurationHandler.getString("Default_Economy_Account");
                 }
@@ -212,29 +211,28 @@ public class TemplateLet extends TemplateMain {
         if (Utils.getEntryBoolean(this, world, region, "taken")) {
             if (Utils.getEntryLong(this, world, region, "expiredate") < System.currentTimeMillis()) {
                 if (Utils.getEntry(this, world, region, "owner") != null) {
-                    final String owner = Utils.getEntryString(this, world, region, "owner");
-                    final String account = Utils.getEntryString(this, world, region, "account");
+                    final Player owner = Bukkit.getPlayer(UUID.fromString(Utils.getEntryString(this, world, region, "owner")));
+                    final OfflinePlayer account = Bukkit.getOfflinePlayer(UUID.fromString(Utils.getEntryString(this, world, region, "account")));
                     final Double price = Utils.getEntryDouble(this, world, region, "price");
-                    final Player player = Bukkit.getPlayer(owner);
                     if (SimpleRegionMarket.econManager.econHasEnough(owner, price)) {
                         if (SimpleRegionMarket.econManager.moneyTransaction(owner, account, price)) {
                             final long newExpTime = Utils.getEntryLong(this, world, region, "expiredate") + Utils.getEntryLong(this, world, region, "renttime");
                             Utils.setEntry(this, world, region, "expiredate", newExpTime);
-                            if (player != null) {
+                            if (owner != null) {
                                 if (SimpleRegionMarket.configurationHandler.getConfig().getBoolean("Show_Auto_Expand_Message", true)) {
                                     final ArrayList<String> list = new ArrayList<String>();
                                     list.add(region);
-                                    LangHandler.NormalOut(player, "PLAYER.REGION.AUTO_EXPANDED", list);
+                                    LangHandler.NormalOut(owner, "PLAYER.REGION.AUTO_EXPANDED", list);
                                 }
-                                SimpleRegionMarket.statisticManager.onMoneysUse(this.id, world, price, account, player.getName());
+                                SimpleRegionMarket.statisticManager.onMoneysUse(this.id, world, price, account, owner);
                             }
                             return;
                         }
                     }
-                    if (player != null) {
+                    if (owner != null) {
                         final ArrayList<String> list = new ArrayList<String>();
                         list.add(region);
-                        LangHandler.NormalOut(player, "PLAYER.REGION.EXPIRED", list);
+                        LangHandler.NormalOut(owner, "PLAYER.REGION.EXPIRED", list);
                     }
                 }
                 untakeRegion(world, region);

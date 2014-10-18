@@ -8,33 +8,12 @@
     <url>http://dev.bukkit.org/server-mods/simple-region-market</url>
     <properties>
         <state>release</state>
-        <majorversion>3.6.3</majorversion>
+        <majorversion>3.6.4</majorversion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <minecraft.version>1.6.4</minecraft.version>
+        <minecraft.version>1.7.10</minecraft.version>
         <minecraft_version>1_6_R3</minecraft_version>
     </properties>
     <repositories>
-        <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public</url>
-        </repository>
-        <repository>
-            <id>craftbukkit-repo</id>
-            <url>https://github.com/Bukkit/CraftBukkit</url>
-        </repository>
-        <repository>
-            <id>sk89q-mvn2</id>
-            <url>https://github.com/sk89q/worldguard/</url>
-        </repository>
-        <repository>
-            <id>sacredlabyrinth</id>
-            <url>http://repo.sacredlabyrinth.net:8081/artifactory/repo/</url>
-        </repository>
-        <repository>
-            <id>comphenix-rep</id>
-            <name>Comphenix Repository</name>
-            <url>http://repo.comphenix.net/content/groups/public</url>
-        </repository>
         <repository>
             <releases>
             </releases>
@@ -42,6 +21,10 @@
             </snapshots>
             <id>dynmap-repo</id>
             <url>http://repo.mikeprimm.com/</url>
+        </repository>
+        <repository>
+            <id>vault-repo</id>
+            <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
         </repository>
     </repositories>
     <build>
@@ -62,9 +45,9 @@
         <dependency> <!-- NMS blocks -->
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.6.4-R0.1-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>compile</scope>
+            <version>1.8.0 Spigot</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/spigot-1.8.jar</systemPath>
         </dependency>
         <!--<dependency>
             <groupId>org.bukkit</groupId>
@@ -76,19 +59,23 @@
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldguard</artifactId>
-            <version>5.8.1-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>truezip</artifactId>
-                    <groupId>de.schlichtherle</groupId>
-                </exclusion>
-            </exclusions>
-            <type>jar</type>
+            <version>6.0.0-beta-02</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/worldguard-6.0.0-beta-02.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldedit</artifactId>
+            <version>5.6.3</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/worldedit-5.6.3.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.dynmap</groupId>
             <artifactId>dynmap-api</artifactId>
-            <version>1.3</version>
+            <version>1.9.2</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/dynmap-api-1.9.2.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.nijikokun.bukkit</groupId>
@@ -97,15 +84,10 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>com.nijikokun</groupId>
-            <artifactId>register</artifactId>
-            <version>1.5</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>net.milkbowl.vault</groupId>
-            <artifactId>Vault</artifactId>
-            <version>1.2.27</version>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.4</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.griefcraft</groupId>
