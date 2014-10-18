@@ -348,7 +348,7 @@ public class TokenManager {
                 }
             }
 
-            if (player.getName().equals(Utils.getEntryString(token, world, protectedRegion.getId(), "owner"))) {
+            if (player.getUniqueId().toString().equals(Utils.getEntryString(token, world, protectedRegion.getId(), "owner"))) {
                 return true;
             }
 
