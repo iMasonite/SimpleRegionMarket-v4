@@ -1,7 +1,5 @@
 package me.ienze.SimpleRegionMarket;
 
-import com.nijikokun.register.payment.Method;
-import com.nijikokun.register.payment.Methods;
 import java.util.logging.Level;
 import me.ienze.SimpleRegionMarket.handlers.LangHandler;
 import net.milkbowl.vault.economy.Economy;
@@ -26,8 +24,6 @@ public class EconomyManager {
             if (server.getPluginManager().getPlugin("Register") == null && server.getPluginManager().getPlugin("Vault") == null) {
                 LangHandler.directOut(Level.WARNING, "MAIN.WARN.NO_ECO_API");
                 enableEconomy = 0;
-            } else if (server.getPluginManager().getPlugin("Register") != null && server.getPluginManager().getPlugin("Vault") == null) {
-                enableEconomy = 1;
             } else {
                 enableEconomy = 2;
                 if (!setupVaultEconomy()) {
@@ -48,18 +44,9 @@ public class EconomyManager {
         return economy != null;
     }
 
-    public Method getEconomicManager() {
-        if (Methods.hasMethod()) {
-            return Methods.getMethod();
-        } else {
-            LangHandler.directOut(Level.WARNING, "MAIN.WARN.REGISTER_NO_ECO");
-            enableEconomy = 0;
-            return null;
-        }
-    }
 
     public boolean isEconomy() {
-        return enableEconomy > 1 || (enableEconomy == 1 && getEconomicManager() != null);
+        return enableEconomy > 1 || (enableEconomy == 1);
     }
 
     public boolean econGiveMoney(String account, double money) {
@@ -68,18 +55,7 @@ public class EconomyManager {
             return true;
         }
         try {
-            if (enableEconomy == 1) {
-                if (getEconomicManager() != null) {
-                    if (money > 0) {
-                        LangHandler.directOut(Level.FINEST, "[EconomyManager - Register] Adding " + String.valueOf(money) + " to Account " + account);
-                        getEconomicManager().getAccount(account).add(money);
-                    } else {
-                        LangHandler.directOut(Level.FINEST, "[EconomyManager - Register] Subtracting " + String.valueOf(money) + " from Account "
-                                + account);
-                        getEconomicManager().getAccount(account).subtract(-money);
-                    }
-                }
-            } else if (enableEconomy == 2) {
+            if (enableEconomy == 2) {
                 if (money > 0) {
                     LangHandler.directOut(Level.FINEST, "[EconomyManager - Register] Adding " + String.valueOf(money) + " to Account " + account);
                     economy.depositPlayer(account, money);
@@ -99,11 +75,7 @@ public class EconomyManager {
         if (money == 0) {
             return true;
         }
-        if (enableEconomy == 1) {
-            if (getEconomicManager() != null) {
-                ret = getEconomicManager().getAccount(account).hasEnough(money);
-            }
-        } else if (enableEconomy == 2) {
+        if (enableEconomy == 2) {
             ret = economy.has(account, money);
         }
         return ret;
@@ -111,11 +83,7 @@ public class EconomyManager {
 
     public String econFormat(double price) {
         String ret = null;
-        if (enableEconomy == 1) {
-            if (getEconomicManager() != null) {
-                ret = getEconomicManager().format(price);
-            }
-        } else if (enableEconomy == 2) {
+        if (enableEconomy == 2) {
             ret = economy.format(price);
         }
         if (ret == null) {
