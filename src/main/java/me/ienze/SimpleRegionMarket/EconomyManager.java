@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import me.ienze.SimpleRegionMarket.handlers.LangHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -49,7 +50,7 @@ public class EconomyManager {
         return enableEconomy > 1 || (enableEconomy == 1);
     }
 
-    public boolean econGiveMoney(String account, double money) {
+    public boolean econGiveMoney(OfflinePlayer account, double money) {
         if (money == 0) {
             LangHandler.directOut(Level.FINEST, "[EconomyManager] Money is zero");
             return true;
@@ -70,7 +71,7 @@ public class EconomyManager {
         return true;
     }
 
-    public boolean econHasEnough(String account, double money) {
+    public boolean econHasEnough(OfflinePlayer account, double money) {
         boolean ret = false;
         if (money == 0) {
             return true;
@@ -92,14 +93,14 @@ public class EconomyManager {
         return ret;
     }
 
-    public boolean moneyTransaction(String from, String to, double money) {
+    public boolean moneyTransaction(OfflinePlayer from, OfflinePlayer to, double money) {
         try {
             if (to == null) {
                 if (econHasEnough(from, money)) {
                     econGiveMoney(from, -money);
                     return true;
                 } else {
-                    LangHandler.ErrorOut(Bukkit.getPlayer(from), "PLAYER.ERROR.NO_MONEY", null);
+                    LangHandler.ErrorOut(from.getPlayer(), "PLAYER.ERROR.NO_MONEY", null);
                     return false;
                 }
             } else if (from == null) {
@@ -111,14 +112,14 @@ public class EconomyManager {
                     econGiveMoney(to, money);
                     return true;
                 } else {
-                    LangHandler.ErrorOut(Bukkit.getPlayer(from), "PLAYER.ERROR.NO_MONEY", null);
+                    LangHandler.ErrorOut(from.getPlayer(), "PLAYER.ERROR.NO_MONEY", null);
                     return false;
                 }
             }
         } catch (final Exception e) {
         }
-        if (Bukkit.getPlayer(from) != null) {
-            LangHandler.ErrorOut(Bukkit.getPlayer(from), "PLAYER.ERROR.ECO_PROBLEM", null);
+        if (from.getPlayer() != null) {
+            LangHandler.ErrorOut(from.getPlayer(), "PLAYER.ERROR.ECO_PROBLEM", null);
         }
         return false;
     }
