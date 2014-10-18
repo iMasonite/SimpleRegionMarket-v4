@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import me.ienze.SimpleRegionMarket.signs.TemplateMain;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class StatisticManager {
@@ -106,31 +107,31 @@ public class StatisticManager {
         }
     }
 
-    public void onSignClick(String tokenId, String world, String playerSell, String playerBuy) {
+    public void onSignClick(String tokenId, String world, OfflinePlayer playerSell, OfflinePlayer playerBuy) {
         if (enabled) {
             //global
             add(new String[]{world + ".global.token.all", world + ".global.token." + tokenId});
             //buyer
-            add(new String[]{world + ".users." + playerBuy + ".buyedtokens.all", world + ".users." + playerBuy + ".buyedtokens." + tokenId});
+            add(new String[]{world + ".users." + playerBuy.getUniqueId().toString() + ".buyedtokens.all", world + ".users." + playerBuy.getUniqueId().toString() + ".buyedtokens." + tokenId});
             //seller
-            add(new String[]{world + ".users." + playerSell + ".selledtokens.all", world + ".users." + playerSell + ".selledtokens." + tokenId});
+            add(new String[]{world + ".users." + playerSell.getUniqueId().toString() + ".selledtokens.all", world + ".users." + playerSell.getUniqueId().toString() + ".selledtokens." + tokenId});
         }
     }
 
-    public void onMoneysUse(String tokenId, String world, Double price, String playerSell, String playerBuy) {
+    public void onMoneysUse(String tokenId, String world, Double price, OfflinePlayer playerSell, OfflinePlayer playerBuy) {
         if (enabled) {
             //global
             addValue(new String[]{world + ".global.price.all", world + ".global.price." + tokenId}, (int) Math.round(price));
             //buyer
-            addValue(new String[]{world + ".users." + playerBuy + ".payedprice.all", world + ".users." + playerBuy + ".payedprice." + tokenId}, (int) Math.round(price));
+            addValue(new String[]{world + ".users." + playerBuy.getUniqueId().toString() + ".payedprice.all", world + ".users." + playerBuy.getUniqueId().toString() + ".payedprice." + tokenId}, (int) Math.round(price));
             //seller
-            addValue(new String[]{world + ".users." + playerSell + ".earnedprice.all", world + ".users." + playerSell + ".earnedprice." + tokenId}, (int) Math.round(price));
+            addValue(new String[]{world + ".users." + playerSell.getUniqueId().toString() + ".earnedprice.all", world + ".users." + playerSell.getUniqueId().toString() + ".earnedprice." + tokenId}, (int) Math.round(price));
         }
 
         save();
     }
 
-    public List<String> getLetStatistic(String player, Integer page) {
+    public List<String> getLetStatistic(OfflinePlayer player, Integer page) {
         final int limit = SimpleRegionMarket.configurationHandler.getConfig().getInt("Entries_Per_List_Page", 10);
         ArrayList<String> out = new ArrayList<String>();
         int count = 1;
@@ -140,7 +141,7 @@ public class StatisticManager {
                     for (final String region : token.entries.get(world).keySet()) {
                         String owner = Utils.getEntryString(token, world, region, "owner");
                         if (owner != null) {
-                            if (owner.equals(player) || Utils.getEntryString(token, world, region, "account").equals(player)) {
+                            if (owner.equals(player.getUniqueId().toString()) || Utils.getEntryString(token, world, region, "account").equals(player.getUniqueId().toString())) {
                                 if (count > (page * limit) - limit && count < (page * limit)) {
                                     String label = LetStatisticsTemplate;
                                     label = label.replace("&playerFrom&", Utils.getEntryString(token, world, region, "owner"));
