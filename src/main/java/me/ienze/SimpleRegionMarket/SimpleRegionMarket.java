@@ -1,6 +1,5 @@
 package me.ienze.SimpleRegionMarket;
 
-import com.sk89q.worldguard.protection.databases.ProtectionDatabaseException;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import java.io.File;
 import java.io.IOException;
