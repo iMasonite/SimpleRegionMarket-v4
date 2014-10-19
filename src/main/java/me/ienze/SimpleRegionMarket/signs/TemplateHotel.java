@@ -42,7 +42,7 @@ public class TemplateHotel extends TemplateLet {
     @Override
     public void ownerClicksTakenSign(String world, String region) {
         final long newRentTime = Utils.getEntryLong(this, world, region, "expiredate") + Utils.getEntryLong(this, world, region, "renttime");
-        final Player owner = Bukkit.getPlayer(Utils.getEntryString(this, world, region, "owner"));
+        final Player owner = Bukkit.getPlayer(UUID.fromString(Utils.getEntryString(this, world, region, "owner")));
         Boolean rentLimit;
         String mre = SimpleRegionMarket.configurationHandler.getString("Max_Rent_Extend");
         if (mre.contains("d") || mre.contains("h") || mre.contains("m")) {

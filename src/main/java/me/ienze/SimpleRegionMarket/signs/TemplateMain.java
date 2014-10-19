@@ -186,7 +186,7 @@ public abstract class TemplateMain {
     }
 
     public void ownerClicksTakenSign(String world, String region) {
-        final Player owner = Bukkit.getPlayer(Utils.getEntryString(this, world, region, "owner"));
+        final Player owner = Bukkit.getPlayer(UUID.fromString(Utils.getEntryString(this, world, region, "owner")));
         if (!SimpleRegionMarket.permManager.hadAdminPermissions(owner)) {
             LangHandler.NormalOut(owner, "PLAYER.REGION.YOURS", null);
         } else {
@@ -204,7 +204,7 @@ public abstract class TemplateMain {
 
     public void otherClicksTakenSign(Player player, String world, String region) {
         final ArrayList<String> list = new ArrayList<String>();
-        list.add(Utils.getEntryString(this, world, region, "owner"));
+        list.add(Bukkit.getOfflinePlayer(UUID.fromString(Utils.getEntryString(this, world, region, "owner"))).getName());
         LangHandler.NormalOut(player, "PLAYER.REGION.TAKEN_BY", list);
     }
 
