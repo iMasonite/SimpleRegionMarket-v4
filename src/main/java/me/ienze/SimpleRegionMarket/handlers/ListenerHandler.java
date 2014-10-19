@@ -99,15 +99,14 @@ public class ListenerHandler implements Listener {
                             if (!signLocations.isEmpty()) {
                                 for (final Location signLoc : signLocations) {
                                     if (signLoc.equals(blockLocation)) {
-										//prevent for too much clicking
-										Iterator<Entry<String, Long>> iter = lastPlayerClick.entrySet().iterator();
-										while (iter.hasNext()) {
-											Entry<String, Long> ent = iter.next();
-											if (ent.getValue() + signClickDifference < System.currentTimeMillis()) {
-												iter.remove();
-											}
-										}
-
+				        //prevent for too much clicking
+					Iterator<Entry<String, Long>> iter = lastPlayerClick.entrySet().iterator();
+					while (iter.hasNext()) {
+                                            Entry<String, Long> ent = iter.next();
+                                            if (ent.getValue() + signClickDifference < System.currentTimeMillis()) {
+                                                iter.remove();
+                                            }
+					}
                                         if (!lastPlayerClick.containsKey(player.getName())) {
                                             lastPlayerClick.put(player.getName(), (long) 0);
                                         }
