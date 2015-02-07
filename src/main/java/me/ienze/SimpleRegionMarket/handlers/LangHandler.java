@@ -72,6 +72,10 @@ public class LangHandler {
     public static void Out(CommandSender p, ChatColor color, String string) {
         p.sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_BLUE + "SRM" + ChatColor.WHITE + "] " + color + parseLanguageString(string, null));
     }
+    
+    public static void Out(CommandSender p, ChatColor color, String string, ArrayList<String> args) {
+        p.sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_BLUE + "SRM" + ChatColor.WHITE + "] " + color + parseLanguageString(string, args));
+    }
 
     public static void Out(CommandSender p, ChatColor color, String[] string) {
         for (String s : string) {

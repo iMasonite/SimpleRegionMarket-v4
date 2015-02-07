@@ -672,7 +672,10 @@ public class CommandHandler implements CommandExecutor {
 
                                 Player me = Bukkit.getPlayer(member);
                                 if (me != null) {
-                                    LangHandler.Out(me, ChatColor.GREEN, "CMD.ADD_MEMBER.SUCCESS_MEMBER");
+                                    ArrayList<String> list = new ArrayList<String>();
+                                    list.add(region);
+                                    list.add(sender.getName());
+                                    LangHandler.Out(me, ChatColor.GREEN, "CMD.ADD_MEMBER.SUCCESS_MEMBER", list);
                                 }
                             }
                         } else {
@@ -684,7 +687,7 @@ public class CommandHandler implements CommandExecutor {
                 } else {
                     ArrayList<String> list = new ArrayList<String>();
                     list.add(region);
-                    list.add(world);
+                    list.add(sender.getName());
                     LangHandler.NormalOut(player, "COMMON.NO_REGION", list);
                 }
             }
@@ -732,7 +735,10 @@ public class CommandHandler implements CommandExecutor {
 
                                     Player me = Bukkit.getPlayer(member);
                                     if (me != null) {
-                                        LangHandler.Out(me, ChatColor.GREEN, "CMD.REM_MEMBER.SUCCESS_MEMBER");
+                                        ArrayList<String> list = new ArrayList<String>();
+                                        list.add(region);
+                                        list.add(region);
+                                        LangHandler.Out(me, ChatColor.GREEN, "CMD.REM_MEMBER.SUCCESS_MEMBER", list);
                                     }
                                 }
                             }
