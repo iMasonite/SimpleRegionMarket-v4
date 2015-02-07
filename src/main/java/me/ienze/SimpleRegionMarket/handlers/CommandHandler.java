@@ -721,18 +721,23 @@ public class CommandHandler implements CommandExecutor {
                         }
                     }
                     if (isOwner) {
-                        if (sender.getName().equals(member)) {
-                            LangHandler.Out(sender, ChatColor.GREEN, "Realy good idea :D (you lost your region...)");
-                        } else {
-                            if (pr.getMembers().contains(member)) {
-                                pr.getMembers().removePlayer(member);
-                                LangHandler.Out(sender, ChatColor.GREEN, "CMD.REM_MEMBER.SUCCESS");
+                        OfflinePlayer new_member = Bukkit.getOfflinePlayer(member);
+                        if(new_member.hasPlayedBefore()){       
+                            if (sender.getName().equals(member)) {
+                                LangHandler.Out(sender, ChatColor.GREEN, "Realy good idea :D (you lost your region...)");
+                            } else {
+                                if (pr.getMembers().contains(new_member.getUniqueId())) {
+                                    pr.getMembers().removePlayer(new_member.getUniqueId());
+                                    LangHandler.Out(sender, ChatColor.GREEN, "CMD.REM_MEMBER.SUCCESS");
 
-                                Player me = Bukkit.getPlayer("member");
-                                if (me != null) {
-                                    LangHandler.Out(me, ChatColor.GREEN, "CMD.ADD_MEMBER.SUCCESS_MEMBER");
+                                    Player me = Bukkit.getPlayer(member);
+                                    if (me != null) {
+                                        LangHandler.Out(me, ChatColor.GREEN, "CMD.REM_MEMBER.SUCCESS_MEMBER");
+                                    }
                                 }
                             }
+                        } else {
+                            LangHandler.Out(sender, ChatColor.RED, "CMD.REM_MEMBER.ERROR_MEMBER_NF"); 
                         }
                     } else {
                         LangHandler.Out(sender, ChatColor.RED, "PLAYER.ERROR.NOT_OWNER");

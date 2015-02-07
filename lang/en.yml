@@ -35,6 +35,7 @@ CMD:
   REM_MEMBER:
     NO_ARG: 'Usage: /srm removeMember <player> <region> <world> - Remove member from your region.'
     SUCCESS: Member removed.
+    ERROR_MEMBER_NF: 'No player with this name found.'
     SUCCESS_MEMBER: 'You have been removed by $0 of his region $1'
   UNTAKE:
     NO_ARG: 'Usage: /srm clear <region> [world]- Removes the owners and members from the region'
