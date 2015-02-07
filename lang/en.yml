@@ -30,6 +30,7 @@ CMD:
   ADD_MEMBER:
     NO_ARG: 'Usage: /srm addMember <player> <region> <world> - Add member to your region.'
     SUCCESS: Member added.
+    ERROR_MEMBER_NF: 'No player with this name found.'
     SUCCESS_MEMBER: 'You have been added by $0 to his region $1'
   REM_MEMBER:
     NO_ARG: 'Usage: /srm removeMember <player> <region> <world> - Remove member from your region.'

@@ -664,14 +664,19 @@ public class CommandHandler implements CommandExecutor {
                         }
                     }
                     if (isOwner) {
-                        if (!pr.getMembers().contains(member)) {
-                            pr.getMembers().addPlayer(member);
-                            LangHandler.Out(sender, ChatColor.GREEN, "CMD.ADD_MEMBER.SUCCESS");
+                        OfflinePlayer new_member = Bukkit.getOfflinePlayer(member);
+                        if(new_member.hasPlayedBefore()){                       
+                            if (!pr.getMembers().contains(new_member.getUniqueId())) {
+                                pr.getMembers().addPlayer(new_member.getUniqueId());
+                                LangHandler.Out(sender, ChatColor.GREEN, "CMD.ADD_MEMBER.SUCCESS");
 
-                            Player me = Bukkit.getPlayer("member");
-                            if (me != null) {
-                                LangHandler.Out(me, ChatColor.GREEN, "CMD.ADD_MEMBER.SUCCESS_MEMBER");
+                                Player me = Bukkit.getPlayer(member);
+                                if (me != null) {
+                                    LangHandler.Out(me, ChatColor.GREEN, "CMD.ADD_MEMBER.SUCCESS_MEMBER");
+                                }
                             }
+                        } else {
+                            LangHandler.Out(sender, ChatColor.RED, "CMD.ADD_MEMBER.ERROR_MEMBER_NF");    
                         }
                     } else {
                         LangHandler.Out(sender, ChatColor.RED, "PLAYER.ERROR.NOT_OWNER");
