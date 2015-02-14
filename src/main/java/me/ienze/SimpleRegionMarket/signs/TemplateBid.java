@@ -189,7 +189,7 @@ public class TemplateBid extends TemplateMain {
 
             String account = "";
             if (input.get("account") != null && !input.get("account").isEmpty()) {
-                account = input.get("account");
+                account = Bukkit.getOfflinePlayer(input.get("account")).getUniqueId().toString();
                 if (SimpleRegionMarket.permManager.hadAdminPermissions(player)) {
                     if (input.get("account").equalsIgnoreCase("none")) {
                         account = "";
@@ -199,7 +199,7 @@ public class TemplateBid extends TemplateMain {
                 if (SimpleRegionMarket.configurationHandler.getBoolean("Player_Line_Empty")) {
                     account = player.getUniqueId().toString();
                 } else {
-                    account = SimpleRegionMarket.configurationHandler.getString("Default_Economy_Account");
+                    account = Bukkit.getOfflinePlayer(SimpleRegionMarket.configurationHandler.getString("Default_Economy_Account")).getUniqueId().toString();
                 }
             }
 
