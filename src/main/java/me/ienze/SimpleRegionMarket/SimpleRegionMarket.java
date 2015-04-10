@@ -79,8 +79,6 @@ public class SimpleRegionMarket extends JavaPlugin {
         tokenManager = new TokenManager(this);
         tokenManager.initTemplates();
 
-        lwcManager.load();
-
         econManager.setupEconomy();
 
         statisticManager = new StatisticManager();
