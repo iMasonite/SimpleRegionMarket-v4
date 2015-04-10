@@ -1,4 +1,4 @@
-version: 3.2.1
+version: 4.0.0
 MAIN:
   WARN:
     NO_ECO_API: Neither Register nor Vault was found - Switching to economy-free version

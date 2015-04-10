@@ -82,7 +82,7 @@ public class ConfigHandler {
             }
 
             //Convert Files ot UUID format
-            if (config.getString("version").equals("3.3.5")){
+            if (config.getString("version").equals("4.0.0")){
 
                 //Convert Statistics
 
