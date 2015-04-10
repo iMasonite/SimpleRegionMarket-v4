@@ -1,5 +1,5 @@
-# Version 3.3.5
-# by technisat and inik0
+# Version 4.0.0
+# by Eternal
 
 Enable_Economy: true
 Logging: true
@@ -72,4 +72,4 @@ Show_rent: true
 Show_sell: true
 
 # Don't touch this
-version: '3.3.5'
+version: '4.0.0'

@@ -1,6 +1,6 @@
 name: SimpleRegionMarket
-version: 3.6
-authors: [Ienze, theZorro266]
+version: 4.0.0
+authors: [Eternal]
 main: me.ienze.SimpleRegionMarket.SimpleRegionMarket
 load: POSTWORLD
 depend: ['WorldGuard', 'Vault']
