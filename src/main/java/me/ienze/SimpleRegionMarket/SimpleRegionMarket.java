@@ -61,7 +61,6 @@ public class SimpleRegionMarket extends JavaPlugin {
         new LangHandler(this, configurationHandler.getConfig().getString("Language", "en"));
 
         wgManager = new WorldGuardManager();
-        wgManager = new WorldGuardManager();
 
         permManager = new PermissionsManager();
 

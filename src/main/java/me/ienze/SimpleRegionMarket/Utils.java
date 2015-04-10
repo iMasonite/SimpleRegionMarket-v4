@@ -465,7 +465,6 @@ public class Utils {
      * @return the copyright
      */
     public static String getCopyright() {
-        return "by ienze and technisat";
-        //original source by thezorro266
+        return "by Eternal";
     }
 }

@@ -80,12 +80,12 @@ public class ConfigHandler {
             if (rewrite) {
                 plugin.saveResource("config.yml", true);
             }
-            
+
             //Convert Files ot UUID format
             if (config.getString("version").equals("3.3.5")){
-                
+
                 //Convert Statistics
-                
+
                 if (new File(SimpleRegionMarket.getPluginDir() + "statistics.yml").exists()) {
                     FileConfiguration statistics = new YamlConfiguration();
                     try {
@@ -95,7 +95,7 @@ public class ConfigHandler {
                     } catch (InvalidConfigurationException e) {
                         e.printStackTrace();
                     }
-                    
+
                     Bukkit.getLogger().log(Level.INFO, "[SimpleRegionMarket] Converting statistics.yml");
                     for(String world : statistics.getKeys(false)){
                         for(String user : statistics.getConfigurationSection(world + ".users").getKeys(false)){
@@ -113,12 +113,12 @@ public class ConfigHandler {
                     try {
                         statistics.save(SimpleRegionMarket.getPluginDir() + "statistics.yml");
                     } catch (IOException ex) {
-                    Logger.getLogger(ConfigHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(ConfigHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                
+
                 //Convert sell
-                
+
                 if (new File(SimpleRegionMarket.getPluginDir() + "signs/sell.yml").exists()) {
                     FileConfiguration sell = new YamlConfiguration();
                     try {
@@ -128,7 +128,7 @@ public class ConfigHandler {
                     } catch (InvalidConfigurationException e) {
                         e.printStackTrace();
                     }
-                    
+
                     Bukkit.getLogger().log(Level.INFO, "[SimpleRegionMarket] Converting sell.yml");
                     for(String world : sell.getKeys(false)){
                         for(String sign : sell.getConfigurationSection(world).getKeys(false)){
@@ -138,17 +138,17 @@ public class ConfigHandler {
                                 sell.set(world + "." + sign + ".owner", Bukkit.getOfflinePlayer(owner).getUniqueId().toString());
                             }
                             sell.set(world + "." + sign + ".account", Bukkit.getOfflinePlayer(account).getUniqueId().toString());
-                            }
                         }
+                    }
                     try {
                         sell.save(SimpleRegionMarket.getPluginDir() + "signs/sell.yml");
                     } catch (IOException ex) {
-                    Logger.getLogger(ConfigHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(ConfigHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                
+
                 //Convert rent
-                
+
                 if (new File(SimpleRegionMarket.getPluginDir() + "signs/rent.yml").exists()) {
                     FileConfiguration rent = new YamlConfiguration();
                     try {
@@ -158,7 +158,7 @@ public class ConfigHandler {
                     } catch (InvalidConfigurationException e) {
                         e.printStackTrace();
                     }
-                    
+
                     Bukkit.getLogger().log(Level.INFO, "[SimpleRegionMarket] Converting rent.yml");
                     for(String world : rent.getKeys(false)){
                         for(String sign : rent.getConfigurationSection(world).getKeys(false)){
@@ -168,17 +168,17 @@ public class ConfigHandler {
                                 rent.set(world + "." + sign + ".owner", Bukkit.getOfflinePlayer(owner).getUniqueId().toString());
                             }
                             rent.set(world + "." + sign + ".account", Bukkit.getOfflinePlayer(account).getUniqueId().toString());
-                            }
                         }
+                    }
                     try {
                         rent.save(SimpleRegionMarket.getPluginDir() + "signs/rent.yml");
                     } catch (IOException ex) {
-                    Logger.getLogger(ConfigHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(ConfigHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                
+
                 //Convert let
-                
+
                 if (new File(SimpleRegionMarket.getPluginDir() + "signs/let.yml").exists()) {
                     FileConfiguration let = new YamlConfiguration();
                     try {
@@ -188,27 +188,27 @@ public class ConfigHandler {
                     } catch (InvalidConfigurationException e) {
                         e.printStackTrace();
                     }
-                    
+
                     Bukkit.getLogger().log(Level.INFO, "[SimpleRegionMarket] Converting let.yml");
                     for(String world : let.getKeys(false)){
                         for(String sign : let.getConfigurationSection(world).getKeys(false)){
                             String owner = let.getString(world + "." + sign + ".owner");
                             String account = let.getString(world + "." + sign + ".account");
                             if(owner != null){
-                                let.set(world + "." + sign + ".owner", Bukkit.getOfflinePlayer(owner).getUniqueId().toString());    
+                                let.set(world + "." + sign + ".owner", Bukkit.getOfflinePlayer(owner).getUniqueId().toString());
                             }
                             let.set(world + "." + sign + ".account", Bukkit.getOfflinePlayer(account).getUniqueId().toString());
-                            }
                         }
+                    }
                     try {
                         let.save(SimpleRegionMarket.getPluginDir() + "signs/let.yml");
                     } catch (IOException ex) {
-                    Logger.getLogger(ConfigHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(ConfigHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                
+
                 //Convert bid
-                
+
                 if (new File(SimpleRegionMarket.getPluginDir() + "signs/bid.yml").exists()) {
                     FileConfiguration bid = new YamlConfiguration();
                     try {
@@ -218,7 +218,7 @@ public class ConfigHandler {
                     } catch (InvalidConfigurationException e) {
                         e.printStackTrace();
                     }
-                    
+
                     Bukkit.getLogger().log(Level.INFO, "[SimpleRegionMarket] Converting bid.yml");
                     for(String world : bid.getKeys(false)){
                         for(String sign : bid.getConfigurationSection(world).getKeys(false)){
@@ -232,16 +232,16 @@ public class ConfigHandler {
                                 bid.set(world + "." + sign + ".user." + Bukkit.getOfflinePlayer(user).getUniqueId().toString(), bid.getInt(world + "." + sign + ".user." + user));
                                 bid.set(world + "." + sign + ".user." + user, null);
                             }
-                            }
                         }
+                    }
                     try {
                         bid.save(SimpleRegionMarket.getPluginDir() + "signs/bid.yml");
                     } catch (IOException ex) {
-                    Logger.getLogger(ConfigHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(ConfigHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                
-                config.set("version", "3.3.6");
+
+                config.set("version", "4.0.0");
                 try {
                     config.save(SimpleRegionMarket.getPluginDir() + "config.yml");
                 } catch (IOException ex) {
