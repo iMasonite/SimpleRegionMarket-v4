@@ -61,12 +61,7 @@ public class SimpleRegionMarket extends JavaPlugin {
         new LangHandler(this, configurationHandler.getConfig().getString("Language", "en"));
 
         wgManager = new WorldGuardManager();
-
-        lwcManager = new LWCManager();
-
-        if (!configurationHandler.getString("Rollback_On_Expire").equals("none")) {
-            regionSaver = new RegionsSaver(Bukkit.getWorlds());
-        }
+        wgManager = new WorldGuardManager();
 
         permManager = new PermissionsManager();
 
