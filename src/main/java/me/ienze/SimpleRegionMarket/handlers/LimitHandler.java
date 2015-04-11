@@ -111,74 +111,75 @@ public class LimitHandler {
     }
 
     public String checkParts(String fullKey, String[] keyParts, Player player, String[] groups, TemplateMain token) {
-        if (keyParts.length > 0) {
-            if (keyParts[0].equals("global")) {
-                if (keyParts.length > 1) {
-                    return checkParts(fullKey, Arrays.copyOfRange(keyParts, 1, keyParts.length), player, groups, token);
+        if (keyParts.length > 0) if (keyParts[0].equals("global")) {
+            if (keyParts.length > 1) {
+                return checkParts(fullKey, Arrays.copyOfRange(keyParts, 1, keyParts.length), player, groups, token);
+            } else {
+                if (getLimit(fullKey) >= 0 && countPlayerGlobalRegions(player) >= getLimit(fullKey)) {
+                    return "PLAYER.LIMITS.GLOBAL";
+                }
+            }
+        } else if (keyParts[0].equals("worlds")) {
+            String world = player.getWorld().getName();
+            if (world.equals(keyParts[1])) {
+                if (keyParts.length > 2) {
+                    return checkParts(fullKey, Arrays.copyOfRange(keyParts, 2, keyParts.length), player, groups, token);
                 } else {
-                    if (getLimit(fullKey) >= 0 && countPlayerGlobalRegions(player) >= getLimit(fullKey)) {
-                        return "PLAYER.LIMITS.GLOBAL";
+                    if (getLimit(fullKey) >= 0 && countPlayerGlobalWorldRegions(player, world) >= getLimit(fullKey)) {
+                        return "PLAYER.LIMITS.GLOBAL_WORLD";
                     }
                 }
-            } else if (keyParts[0].equals("worlds")) {
-                String world = player.getWorld().getName();
-                if (world.equals(keyParts[1])) {
-                    if (keyParts.length > 2) {
-                        return checkParts(fullKey, Arrays.copyOfRange(keyParts, 2, keyParts.length), player, groups, token);
+                if (player.equals("null")){
+                    return "PLAYER.LIMITS.GLOBAL_WORLD";
+                }
+            }
+        } else if (keyParts[0].equals("signs")) {
+            String sign = token.id;
+            if (sign.equals(keyParts[1])) {
+                if (keyParts.length > 2) {
+                    return checkParts(fullKey, Arrays.copyOfRange(keyParts, 2, keyParts.length), player, groups, token);
+                } else {
+                    if (fullKey.contains("worlds")) {
+                        String world = player.getWorld().getName();
+                        if (getLimit(fullKey) >= 0 && countPlayerWorldRegions(player, token, world) >= getLimit(fullKey)) {
+                            return "PLAYER.LIMITS.TOKEN_WORLD";
+                        }
                     } else {
-                        if (getLimit(fullKey) >= 0 && countPlayerGlobalWorldRegions(player, world) >= getLimit(fullKey)) {
-                            return "PLAYER.LIMITS.GLOBAL_WORLD";
+                        if (getLimit(fullKey) >= 0 && countPlayerTokenRegions(player, token) >= getLimit(fullKey)) {
+                            return "PLAYER.LIMITS.TOKEN";
                         }
                     }
                 }
-            } else if (keyParts[0].equals("signs")) {
-                String sign = token.id;
-                if (sign.equals(keyParts[1])) {
+            }
+        } else if (keyParts[0].equals("groups")) {
+            for (String group : groups) {
+                if (group.equals(keyParts[1])) {
                     if (keyParts.length > 2) {
                         return checkParts(fullKey, Arrays.copyOfRange(keyParts, 2, keyParts.length), player, groups, token);
                     } else {
                         if (fullKey.contains("worlds")) {
                             String world = player.getWorld().getName();
                             if (getLimit(fullKey) >= 0 && countPlayerWorldRegions(player, token, world) >= getLimit(fullKey)) {
-                                return "PLAYER.LIMITS.TOKEN_WORLD";
+                                return "PLAYER.LIMITS.GROUP_WORLD";
                             }
-                        } else {
+                        } else if (fullKey.contains("signs")) {
                             if (getLimit(fullKey) >= 0 && countPlayerTokenRegions(player, token) >= getLimit(fullKey)) {
-                                return "PLAYER.LIMITS.TOKEN";
+                                return "PLAYER.LIMITS.GROUP_TOKEN";
                             }
-                        }
-                    }
-                }
-            } else if (keyParts[0].equals("groups")) {
-                for (String group : groups) {
-                    if (group.equals(keyParts[1])) {
-                        if (keyParts.length > 2) {
-                            return checkParts(fullKey, Arrays.copyOfRange(keyParts, 2, keyParts.length), player, groups, token);
                         } else {
-                            if (fullKey.contains("worlds")) {
-                                String world = player.getWorld().getName();
-                                if (getLimit(fullKey) >= 0 && countPlayerWorldRegions(player, token, world) >= getLimit(fullKey)) {
-                                    return "PLAYER.LIMITS.GROUP_WORLD";
-                                }
-                            } else if (fullKey.contains("signs")) {
-                                if (getLimit(fullKey) >= 0 && countPlayerTokenRegions(player, token) >= getLimit(fullKey)) {
-                                    return "PLAYER.LIMITS.GROUP_TOKEN";
-                                }
-                            } else {
-                                if (getLimit(fullKey) >= 0 && countPlayerGlobalRegions(player) >= getLimit(fullKey)) {
-                                    return "PLAYER.LIMITS.GROUP";
-                                }
+                            if (getLimit(fullKey) >= 0 && countPlayerGlobalRegions(player) >= getLimit(fullKey)) {
+                                return "PLAYER.LIMITS.GROUP";
                             }
                         }
                     }
                 }
+            }
+        } else {
+            if (keyParts.length > 0) {
+                return checkParts(fullKey, Arrays.copyOfRange(keyParts, 1, keyParts.length), player, groups, token);
             } else {
-                if (keyParts.length > 0) {
-                    return checkParts(fullKey, Arrays.copyOfRange(keyParts, 1, keyParts.length), player, groups, token);
-                } else {
-                    LangHandler.consoleOut("Incorrect limits key, removing.", Level.WARNING, null);
-                    config.set(fullKey, null);
-                }
+                LangHandler.consoleOut("Incorrect limits key, removing.", Level.WARNING, null);
+                config.set(fullKey, null);
             }
         }
         return null;
